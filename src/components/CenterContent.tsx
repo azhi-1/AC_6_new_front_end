@@ -126,12 +126,12 @@ function PilotTab({ data }: { data: GameData }) {
           
           <div className="relative w-64 h-64 flex items-center justify-center">
             {/* Outer rotating dashed ring */}
-            <svg className="absolute inset-0 w-full h-full animate-[spin_20s_linear_infinite] will-change-transform" viewBox="0 0 100 100">
+            <svg className="absolute inset-0 w-full h-full animate-[spin_20s_linear_infinite]" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="48" fill="none" stroke="rgba(70, 170, 149, 0.3)" strokeWidth="0.5" strokeDasharray="2 4" />
               <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(70, 170, 149, 0.6)" strokeWidth="1" strokeDasharray="10 5 2 5" />
             </svg>
             {/* Inner rotating ring */}
-            <svg className="absolute inset-0 w-full h-full animate-[spin_15s_linear_infinite_reverse] will-change-transform" viewBox="0 0 100 100">
+            <svg className="absolute inset-0 w-full h-full animate-[spin_15s_linear_infinite_reverse]" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="36" fill="none" stroke="var(--color-hud-accent)" strokeWidth="2" strokeDasharray="20 10 5 10" />
               <circle cx="50" cy="50" r="32" fill="none" stroke="rgba(70, 170, 149, 0.4)" strokeWidth="1" strokeDasharray="4 4" />
             </svg>

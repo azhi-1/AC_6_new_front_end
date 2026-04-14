@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { GameData } from '../types';
 import PanelFrame from './shared/PanelFrame';
 
@@ -11,8 +11,8 @@ export default function RightSidebar({ data }: { data: GameData }) {
       <PanelFrame title="动力炉状态" className="flex-shrink-0">
         <div className="flex gap-2 items-center">
           <div className="w-16 h-16 border border-hud-border rounded-full flex items-center justify-center relative overflow-hidden">
-            <div className="absolute inset-0 border-4 border-hud-accent rounded-full border-t-transparent animate-spin will-change-transform" style={{ animationDuration: '3s' }}></div>
-            <div className="absolute inset-2 border-2 border-hud-primary rounded-full border-b-transparent animate-spin will-change-transform" style={{ animationDuration: '2s', animationDirection: 'reverse' }}></div>
+            <div className="absolute inset-0 border-4 border-hud-accent rounded-full border-t-transparent animate-spin" style={{ animationDuration: '3s' }}></div>
+            <div className="absolute inset-2 border-2 border-hud-primary rounded-full border-b-transparent animate-spin" style={{ animationDuration: '2s', animationDirection: 'reverse' }}></div>
             <span className="text-[8px] text-hud-accent">CORE</span>
           </div>
           <div className="flex-1 flex flex-col gap-1 text-[9px]">
@@ -43,7 +43,7 @@ export default function RightSidebar({ data }: { data: GameData }) {
           <div className="flex justify-between items-center mt-1">
             <span className="text-[10px] text-hud-text/80">维修套件 (REPAIR)</span>
             <div className="flex gap-1">
-              {[1,2,3].map(i => <div key={i} className="w-4 h-2 bg-hud-accent"></div>)}
+              {[1, 2, 3].map(i => <div key={i} className="w-4 h-2 bg-hud-accent"></div>)}
             </div>
           </div>
         </div>
@@ -91,58 +91,52 @@ export default function RightSidebar({ data }: { data: GameData }) {
 }
 
 /**
- * 使用 Canvas + requestAnimationFrame 绘制心跳波形
- * 完全脱离 React 渲染循环，零 setState 开销
+ * 使用 Canvas + setInterval 绘制心跳波形
+ * 固定间隔刷新（而非每帧RAF），在ST的iframe中大幅减少GPU压力
  */
 function NeuralSyncWave({ syncRate }: { syncRate: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const pointsRef = useRef<number[]>(Array(50).fill(50));
-  const rafRef = useRef<number>(0);
-  const lastTickRef = useRef<number>(0);
+  const pointsRef = useRef<number[]>(Array(30).fill(50));
+  const accentColorRef = useRef<string>('#46aa95');
 
-  const draw = useCallback(() => {
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const now = performance.now();
-    // 每 150ms 推入一个新点（比原来50ms慢3倍，视觉效果依然流畅）
-    if (now - lastTickRef.current > 150) {
-      lastTickRef.current = now;
+    // 缓存颜色，避免每帧 getComputedStyle
+    accentColorRef.current = getComputedStyle(canvas).getPropertyValue('--color-hud-accent').trim() || '#46aa95';
+
+    const tick = () => {
       const pts = pointsRef.current;
       pts.shift();
       const isBeat = Math.random() > 0.8;
       pts.push(isBeat ? 50 + (Math.random() * 40 - 20) : 50 + (Math.random() * 4 - 2));
-    }
 
-    const w = canvas.width;
-    const h = canvas.height;
-    const pts = pointsRef.current;
+      const w = canvas.width;
+      const h = canvas.height;
 
-    ctx.clearRect(0, 0, w, h);
+      ctx.clearRect(0, 0, w, h);
+      ctx.shadowColor = 'rgba(70, 170, 149, 0.6)';
+      ctx.shadowBlur = 4;
+      ctx.strokeStyle = accentColorRef.current;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let i = 0; i < pts.length; i++) {
+        const x = (i / (pts.length - 1)) * w;
+        const y = (pts[i] / 100) * h;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    };
 
-    // 发光效果
-    ctx.shadowColor = 'rgba(70, 170, 149, 0.6)';
-    ctx.shadowBlur = 4;
-    ctx.strokeStyle = getComputedStyle(canvas).getPropertyValue('--color-hud-accent').trim() || '#46aa95';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    for (let i = 0; i < pts.length; i++) {
-      const x = (i / (pts.length - 1)) * w;
-      const y = (pts[i] / 100) * h;
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-
-    rafRef.current = requestAnimationFrame(draw);
+    tick();
+    // 每 300ms 刷新一次，视觉仍然流畅，但CPU开销降为RAF的1/20
+    const timer = setInterval(tick, 300);
+    return () => clearInterval(timer);
   }, []);
-
-  useEffect(() => {
-    rafRef.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [draw]);
 
   return (
     <div className="flex flex-col gap-2">
