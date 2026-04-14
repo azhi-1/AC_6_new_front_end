@@ -1,11 +1,11 @@
 import {
-  GameData,
-  MechPart,
-  MechBuild,
-  IntegratedStats,
   CharacterComm,
-  Mission,
+  GameData,
   HangarData,
+  IntegratedStats,
+  MechBuild,
+  MechPart,
+  Mission,
 } from './types';
 
 /**
@@ -13,7 +13,7 @@ import {
  * 新角色会使用空数组，CommTab 会显示占位图。
  */
 const PORTRAIT_REGISTRY: Record<string, string[]> = {
-  ayre: [
+  艾尔: [
     'https://cdn.imgchest.com/files/f54ecdab32fa.png',
     'https://cdn.imgchest.com/files/5232454620c6.png',
     'https://cdn.imgchest.com/files/958f4f21c921.png',
@@ -25,28 +25,28 @@ const PORTRAIT_REGISTRY: Record<string, string[]> = {
     'https://cdn.imgchest.com/files/131d9ee1fc2b.png',
     'https://cdn.imgchest.com/files/422d9bd2398d.png',
   ],
-  lina: [
+  莉娜·许奈德: [
     'https://cdn.imgchest.com/files/485d5431b9cd.png',
     'https://cdn.imgchest.com/files/84cc2a2a3100.png',
     'https://cdn.imgchest.com/files/df8f0c3a66c3.png',
     'https://cdn.imgchest.com/files/c1775ce2a102.png',
   ],
-  caoyiyi: [
+  曹奕奕: [
     'https://cdn.imgchest.com/files/497451fd0739.png',
     'https://cdn.imgchest.com/files/d417fa5043e9.png',
     'https://cdn.imgchest.com/files/d0c9a6d4546b.png',
   ],
-  linreng: [
+  林芿: [
     'https://cdn.imgchest.com/files/fa1f0ddead7e.png',
     'https://cdn.imgchest.com/files/b3a8f97f2250.png',
     'https://cdn.imgchest.com/files/31614797fa7c.png',
   ],
-  tailuan: [
+  邰鸾: [
     'https://cdn.imgchest.com/files/623b1c76e583.png',
     'https://cdn.imgchest.com/files/f5d057e7b770.png',
     'https://cdn.imgchest.com/files/4c28f7b89b88.png',
   ],
-  lili: [
+  利荔: [
     'https://cdn.imgchest.com/files/6e59d6be47e7.png',
     'https://cdn.imgchest.com/files/f164356a5bd9.png',
   ],
