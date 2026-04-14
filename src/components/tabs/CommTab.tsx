@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { GameData, CharacterComm } from '../../types';
 import HudBar from '../shared/HudBar';
 
+// 已预加载的URL集合，避免重复创建Image对象
+const preloadedUrls = new Set<string>();
+
 export default function CommTab({ data }: { data: GameData }) {
-  // Preload all portraits when the component mounts
+  // 只预加载未曾加载过的立绘
   useEffect(() => {
     Object.values(data.comms).forEach(comm => {
       comm.portraits.forEach(url => {
-        const img = new Image();
-        img.src = url;
+        if (!preloadedUrls.has(url)) {
+          preloadedUrls.add(url);
+          const img = new Image();
+          img.src = url;
+        }
       });
     });
-  }, [data.comms]);
+  }, []);
 
   return (
     <div className="w-full h-full p-6 flex flex-col">
@@ -61,7 +67,7 @@ function CharacterCard({ comm }: { comm: CharacterComm }) {
       </button>
 
       {/* Info Bar */}
-      <div className="absolute bottom-0 left-0 w-full bg-black/80 backdrop-blur-md border-t border-hud-border p-3 min-h-[60px] flex flex-col justify-center">
+      <div className="absolute bottom-0 left-0 w-full bg-black/90 border-t border-hud-border p-3 min-h-[60px] flex flex-col justify-center">
         <div className="relative w-full h-full flex items-center">
           <motion.div 
             className="text-sm font-bold tracking-widest text-hud-text drop-shadow-[0_0_5px_rgba(216,232,233,0.8)]"

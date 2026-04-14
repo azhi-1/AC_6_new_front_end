@@ -98,7 +98,7 @@ export default function App() {
           </div>
 
           {/* Center Content */}
-          <div className="relative flex-1 overflow-hidden border border-hud-border bg-hud-panel/30 backdrop-blur-sm">
+          <div className="relative flex-1 overflow-hidden border border-hud-border bg-hud-panel/30">
             <CenterContent activeTab={activeTab} data={gameData} />
           </div>
 

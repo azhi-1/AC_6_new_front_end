@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { GameData } from '../../types';
 import PanelFrame from '../shared/PanelFrame';
 import HudBar from '../shared/HudBar';
+
+// 预计算装饰条透明度
+const DECO_BAR_OPACITIES = Array.from({ length: 15 }, () => Math.random() * 0.6 + 0.2);
+// 预计算假哈希值
+const FAKE_HASH = Math.random().toString(16).substring(2, 10).toUpperCase();
 
 const STAT_LABELS: Record<string, string> = {
   weaponType: '武器类型',
@@ -124,12 +129,12 @@ export default function MechTab({ data }: { data: GameData }) {
                         {/* Decorative Footer */}
                         <div className="mt-1 flex justify-between items-end opacity-80">
                           <div className="flex gap-[2px]">
-                            {Array.from({ length: 15 }).map((_, i) => (
-                              <div key={i} className="w-[2px] h-3 bg-hud-accent" style={{ opacity: Math.random() * 0.6 + 0.2 }}></div>
+                            {DECO_BAR_OPACITIES.map((op, i) => (
+                              <div key={i} className="w-[2px] h-3 bg-hud-accent" style={{ opacity: op }}></div>
                             ))}
                           </div>
                           <span className="text-[8px] font-mono text-hud-accent/70">
-                            DATA_HASH: {Math.random().toString(16).substring(2, 10).toUpperCase()}
+                            DATA_HASH: {FAKE_HASH}
                           </span>
                         </div>
                       </div>

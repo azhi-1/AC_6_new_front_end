@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { TabType, GameData } from '../types';
 import CommTab from './tabs/CommTab';
 import MechTab from './tabs/MechTab';
 import PanelFrame from './shared/PanelFrame';
+
+// 预计算条形码样式，避免每次渲染重算
+const BARCODE_STYLES = Array.from({ length: 45 }, () => ({
+  width: `${Math.random() * 5 + 1}px`,
+  opacity: Math.random() * 0.6 + 0.2,
+}));
 
 export default function CenterContent({ activeTab, data }: { activeTab: TabType, data: GameData }) {
   return (
@@ -11,10 +17,10 @@ export default function CenterContent({ activeTab, data }: { activeTab: TabType,
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTab}
-          initial={{ opacity: 0, scale: 0.98, filter: 'blur(4px)' }}
-          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, scale: 1.02, filter: 'blur(4px)' }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
           className="absolute inset-0 w-full h-full"
         >
           {activeTab === 'MAIN' && <MainTab />}
@@ -33,8 +39,8 @@ function MainTab() {
   return (
     <div className="w-full h-full relative flex items-center justify-center overflow-hidden">
       <img src="https://cdn.imgchest.com/files/95054217c44d.png" alt="Main Background" className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 border border-hud-accent bg-hud-bg/80 px-6 py-2 backdrop-blur-md hidden md:block">
-        <span className="text-hud-accent font-bold tracking-[0.3em] text-sm animate-pulse">
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 border border-hud-accent bg-hud-bg/90 px-6 py-2 hidden md:block">
+        <span className="text-hud-accent font-bold tracking-[0.3em] text-sm">
           ///MAIN SYSTEM//COMBAT MODE ACTIVE///
         </span>
       </div>
@@ -120,23 +126,23 @@ function PilotTab({ data }: { data: GameData }) {
           
           <div className="relative w-64 h-64 flex items-center justify-center">
             {/* Outer rotating dashed ring */}
-            <svg className="absolute inset-0 w-full h-full animate-[spin_20s_linear_infinite]" viewBox="0 0 100 100">
+            <svg className="absolute inset-0 w-full h-full animate-[spin_20s_linear_infinite] will-change-transform" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="48" fill="none" stroke="rgba(70, 170, 149, 0.3)" strokeWidth="0.5" strokeDasharray="2 4" />
               <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(70, 170, 149, 0.6)" strokeWidth="1" strokeDasharray="10 5 2 5" />
             </svg>
             {/* Inner rotating ring */}
-            <svg className="absolute inset-0 w-full h-full animate-[spin_15s_linear_infinite_reverse]" viewBox="0 0 100 100">
+            <svg className="absolute inset-0 w-full h-full animate-[spin_15s_linear_infinite_reverse] will-change-transform" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="36" fill="none" stroke="var(--color-hud-accent)" strokeWidth="2" strokeDasharray="20 10 5 10" />
               <circle cx="50" cy="50" r="32" fill="none" stroke="rgba(70, 170, 149, 0.4)" strokeWidth="1" strokeDasharray="4 4" />
             </svg>
             
             {/* Center Data */}
-            <div className="text-center flex flex-col items-center justify-center bg-hud-bg/80 rounded-full w-40 h-40 backdrop-blur-md border border-hud-accent/30 shadow-[inset_0_0_30px_rgba(70,170,149,0.2)] z-10">
+            <div className="text-center flex flex-col items-center justify-center bg-hud-bg/90 rounded-full w-40 h-40 border border-hud-accent/30 shadow-[inset_0_0_30px_rgba(70,170,149,0.2)] z-10">
               <div className="text-[10px] text-hud-text/60 tracking-widest mb-1">NEURAL SYNC</div>
               <div className="text-5xl font-black text-hud-accent drop-shadow-[0_0_15px_rgba(70,170,149,0.8)]">
                 {data.pilot.stats.syncRate}<span className="text-2xl text-hud-accent/70">%</span>
               </div>
-              <div className="text-[9px] text-hud-bg font-bold mt-2 bg-hud-accent px-3 py-0.5 rounded-sm animate-pulse tracking-widest">
+              <div className="text-[9px] text-hud-bg font-bold mt-2 bg-hud-accent px-3 py-0.5 rounded-sm tracking-widest">
                 STABLE
               </div>
             </div>
@@ -189,8 +195,8 @@ function PilotTab({ data }: { data: GameData }) {
                   <span>{data.global.time}</span>
                 </div>
                 <div className="h-10 w-full flex gap-[2px]">
-                  {Array.from({ length: 45 }).map((_, i) => (
-                    <div key={i} className="h-full bg-hud-accent" style={{ width: `${Math.random() * 5 + 1}px`, opacity: Math.random() * 0.6 + 0.2 }}></div>
+                  {BARCODE_STYLES.map((style, i) => (
+                    <div key={i} className="h-full bg-hud-accent" style={style}></div>
                   ))}
                 </div>
               </div>

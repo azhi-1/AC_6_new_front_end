@@ -19,7 +19,7 @@ export default function TopBar({ activeTab, setActiveTab, data }: TopBarProps) {
   ];
 
   return (
-    <div className="w-full h-auto min-h-[64px] flex flex-col md:flex-row items-center justify-between bg-hud-panel border border-hud-border px-2 md:px-4 backdrop-blur-md py-2 md:py-0 gap-2 md:gap-0">
+    <div className="w-full h-auto min-h-[64px] flex flex-col md:flex-row items-center justify-between bg-hud-panel border border-hud-border px-2 md:px-4 py-2 md:py-0 gap-2 md:gap-0">
       {/* Tabs */}
       <div className="flex space-x-1 overflow-x-auto w-full md:w-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-1 md:pb-0">
         {tabs.map(tab => {
@@ -62,7 +62,7 @@ export default function TopBar({ activeTab, setActiveTab, data }: TopBarProps) {
         </div>
         <div className="flex flex-col items-end border-l border-hud-border pl-4">
           <span className="text-[10px] text-hud-text/60">系统状态</span>
-          <span className="text-sm font-bold text-hud-accent animate-pulse">正常</span>
+          <span className="text-sm font-bold text-hud-accent">正常</span>
         </div>
       </div>
     </div>

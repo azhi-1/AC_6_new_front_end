@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function PanelFrame({ children, title, className = '' }: { children: React.ReactNode, title?: string, className?: string }) {
   return (
-    <div className={`relative bg-hud-panel border border-hud-border backdrop-blur-sm p-3 ${className}`}>
+    <div className={`relative bg-hud-panel border border-hud-border p-3 ${className}`}>
       {/* Corner accents */}
       <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-hud-accent"></div>
       <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-hud-accent"></div>

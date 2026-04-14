@@ -22,7 +22,7 @@ body {
   /* overflow: hidden 在 ST 消息 iframe 里会让 body.scrollHeight 无法被测量，故去除 */
 }
 
-/* CRT Scanline Effect */
+/* CRT Scanline Effect - 使用 will-change 提升到合成层，避免每帧重绘 */
 .crt-overlay {
   position: absolute;
   top: 0;
@@ -34,6 +34,8 @@ body {
   pointer-events: none;
   z-index: 50;
   opacity: 0.4;
+  will-change: opacity;
+  contain: strict;
 }
 
 .crt-vignette {
@@ -45,6 +47,41 @@ body {
   background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.6) 100%);
   pointer-events: none;
   z-index: 49;
+  will-change: opacity;
+  contain: strict;
+}
+
+/* 移动端：禁用 CRT 效果和重型动画，节省大量 GPU 开销 */
+@media (max-width: 767px) {
+  .crt-overlay {
+    display: none;
+  }
+  .crt-vignette {
+    display: none;
+  }
+  /* 移动端禁用所有旋转动画 */
+  .will-change-transform {
+    animation: none !important;
+  }
+}
+
+/* 低性能设备：减少动画 */
+@media (prefers-reduced-motion: reduce) {
+  .crt-overlay,
+  .crt-vignette {
+    display: none;
+  }
+}
+
+/* 侧边栏脉冲动画 - 使用更轻量的实现 */
+.sidebar-pulse {
+  animation: sidebar-pulse-kf 2s ease-in-out infinite;
+  will-change: opacity;
+}
+
+@keyframes sidebar-pulse-kf {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 /* Custom Scrollbar */
