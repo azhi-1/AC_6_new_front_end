@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import CenterContent from './components/CenterContent';
+import RightSidebar from './components/RightSidebar';
+import TopBar from './components/TopBar';
+import { mapMvuDataToGameData } from './dataMapper';
 import { mockData } from './mockData';
 import { GameData, TabType } from './types';
-import { mapMvuDataToGameData } from './dataMapper';
-import TopBar from './components/TopBar';
-import RightSidebar from './components/RightSidebar';
-import CenterContent from './components/CenterContent';
 
 /**
  * 从最新 assistant 楼层读取 MVU stat_data，映射为 GameData。
@@ -73,15 +73,14 @@ export default function App() {
 
   return (
     /*
-     * 高度方案：用 aspect-ratio: 16/9 替代 h-screen。
+     * 高度方案：用 aspect-ratio 替代 h-screen。
      * ST 消息 iframe 初始视口很矮，100vh / h-screen 会把内容锁死在矮 iframe 里。
      * 改用 aspect-ratio 后，容器高度由宽度决定，body.scrollHeight 可被测量，
      * 配合酒馆助手的 iframe 自动撑高机制即可正常展开。
      */
     <div
       id="ac6-outer"
-      className="relative w-full bg-hud-bg text-hud-text font-mono overflow-hidden"
-      style={{ aspectRatio: '16 / 9' }}
+      className="relative w-full bg-hud-bg text-hud-text font-mono overflow-hidden aspect-[9/16] md:aspect-video"
     >
       <div
         className="relative w-full h-full bg-black flex flex-col overflow-hidden"
@@ -93,7 +92,7 @@ export default function App() {
         {/* Grid Layout */}
         <div className="relative z-10 w-full h-full flex flex-col md:grid md:grid-cols-[1fr_320px] md:grid-rows-[64px_1fr] gap-2 md:gap-4 p-2 md:p-4 overflow-hidden">
           {/* Top Bar spans full width */}
-          <div className="md:col-span-2 flex-shrink-0">
+          <div className="md:col-span-2 flex-shrink-0 relative z-50">
             <TopBar activeTab={activeTab} setActiveTab={setActiveTab} data={gameData} />
           </div>
 
