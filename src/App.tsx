@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import CenterContent from './components/CenterContent';
 import RightSidebar from './components/RightSidebar';
 import TopBar from './components/TopBar';
@@ -43,6 +44,7 @@ async function fetchGameData(): Promise<GameData | null> {
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('MAIN');
   const [gameData, setGameData] = useState<GameData>(mockData);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -89,22 +91,35 @@ export default function App() {
         <div className="crt-overlay"></div>
         <div className="crt-vignette"></div>
 
-        {/* Grid Layout */}
-        <div className="relative z-10 w-full h-full flex flex-col md:grid md:grid-cols-[1fr_320px] md:grid-rows-[64px_1fr] gap-2 md:gap-4 p-2 md:p-4 overflow-hidden">
+        {/* Grid Layout — sidebar折叠时中央内容占满宽度 */}
+        <div className={`relative z-10 w-full h-full flex flex-col md:grid ${sidebarOpen ? 'md:grid-cols-[1fr_320px]' : 'md:grid-cols-[1fr]'} md:grid-rows-[64px_1fr] gap-2 md:gap-4 p-2 md:p-4 overflow-hidden`}>
           {/* Top Bar spans full width */}
-          <div className="md:col-span-2 flex-shrink-0 relative z-50">
+          <div className={`${sidebarOpen ? 'md:col-span-2' : ''} flex-shrink-0 relative z-50`}>
             <TopBar activeTab={activeTab} setActiveTab={setActiveTab} data={gameData} />
           </div>
 
-          {/* Center Content */}
-          <div className="relative flex-1 overflow-hidden border border-hud-border bg-hud-panel/30">
-            <CenterContent activeTab={activeTab} data={gameData} />
+          {/* Center Content + Sidebar Toggle */}
+          <div className="relative flex-1 overflow-hidden flex">
+            <div className="relative flex-1 overflow-hidden border border-hud-border bg-hud-panel/30">
+              <CenterContent activeTab={activeTab} data={gameData} />
+            </div>
+
+            {/* Sidebar Toggle Button — 仅PC端显示 */}
+            <button
+              onClick={() => setSidebarOpen(prev => !prev)}
+              className="hidden md:flex items-center justify-center w-5 flex-shrink-0 border border-hud-border bg-hud-panel hover:bg-hud-accent/20 transition-colors cursor-pointer ml-1"
+              title={sidebarOpen ? '收起侧栏' : '展开侧栏'}
+            >
+              {sidebarOpen ? <ChevronRight className="w-3 h-3 text-hud-accent" /> : <ChevronLeft className="w-3 h-3 text-hud-accent" />}
+            </button>
           </div>
 
-          {/* Right Sidebar */}
-          <div className="hidden md:flex relative flex-col gap-3 overflow-y-auto overflow-x-hidden pr-2">
-            <RightSidebar data={gameData} />
-          </div>
+          {/* Right Sidebar — 折叠时完全不渲染，Canvas/动画零开销 */}
+          {sidebarOpen && (
+            <div className="hidden md:flex relative flex-col gap-3 overflow-y-auto overflow-x-hidden pr-2">
+              <RightSidebar data={gameData} />
+            </div>
+          )}
         </div>
       </div>
     </div>

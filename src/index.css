@@ -22,56 +22,10 @@ body {
   /* overflow: hidden 在 ST 消息 iframe 里会让 body.scrollHeight 无法被测量，故去除 */
 }
 
-/* CRT Scanline Effect - 使用静态 SVG 纹理替代实时渐变，大幅降低 GPU 合成开销 */
-.crt-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  /* 用 repeating-linear-gradient 代替双层渐变，减少合成层数 */
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.15) 2px,
-    rgba(0, 0, 0, 0.15) 4px
-  );
-  pointer-events: none;
-  z-index: 50;
-  opacity: 0.4;
-  contain: strict;
-}
-
+/* CRT 效果已禁用以优化性能 */
+.crt-overlay,
 .crt-vignette {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.6) 100%);
-  pointer-events: none;
-  z-index: 49;
-  contain: strict;
-}
-
-/* 移动端：禁用 CRT 效果和重型动画，节省大量 GPU 开销 */
-@media (max-width: 767px) {
-  .crt-overlay,
-  .crt-vignette {
-    display: none;
-  }
-  .will-change-transform {
-    animation: none !important;
-  }
-}
-
-/* 低性能设备：减少动画 */
-@media (prefers-reduced-motion: reduce) {
-  .crt-overlay,
-  .crt-vignette {
-    display: none;
-  }
+  display: none;
 }
 
 /* 侧边栏脉冲动画 */
